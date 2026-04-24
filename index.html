@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mystery Snack Café</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{--ca:#FF6B35;--cb:#FFD166;--cc:#06D6A0;--cd:#7B2FBE;--ce:#2D1B00;--cf:#8B6F5C;--cg:#FF9EBB;--ch:#FFF8F0}
+    body{font-family:'Nunito',sans-serif;background:var(--ch);min-height:100vh;color:var(--ce)}
+    #app{min-height:600px}
+    .page{display:none;animation:fi 0.35s ease}
+    .page.active{display:block}
+    @keyframes fi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+    .cafe-nav{background:var(--ca);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .logo{font-family:'Fredoka One',cursive;color:#fff;font-size:22px;letter-spacing:1px}
+    .url-bar{background:rgba(255,255,255,0.95);border-radius:20px;padding:6px 16px;font-size:13px;font-family:'Courier New',monospace;color:#333;flex:1;max-width:340px;border:none;outline:none}
+    .url-bar:focus{box-shadow:0 0 0 3px var(--cb)}
+    .nav-links{display:flex;gap:10px}
+    .nav-links a{color:#fff;text-decoration:none;font-weight:700;font-size:14px;padding:4px 10px;border-radius:12px;transition:background 0.2s}
+    .nav-links a:hover{background:rgba(255,255,255,0.25)}
+    .url-section{background:#fff3e0;border-bottom:2px dashed var(--cb);padding:8px 20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .url-section label{font-size:13px;font-weight:700;color:var(--cf)}
+    .url-input{flex:1;min-width:160px;padding:7px 14px;border:2px solid var(--cb);border-radius:16px;font-size:13px;font-family:'Courier New',monospace;background:#fff;outline:none;color:#333}
+    .url-input:focus{border-color:var(--ca);box-shadow:0 0 0 3px rgba(255,107,53,0.15)}
+    .url-btn{background:var(--ca);color:#fff;border:none;border-radius:14px;padding:7px 16px;font-weight:700;font-size:13px;cursor:pointer}
+    .url-btn:hover{opacity:0.9}
+    .htoggle{background:none;border:2px dashed var(--cd);color:var(--cd);border-radius:10px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer}
+    .htoggle:hover{background:rgba(123,47,190,0.1)}
+    .ghint{display:none;background:#f8f0ff;padding:10px 20px;font-size:14px;color:var(--cd);line-height:1.7;border-bottom:1px solid #e8d8f8}
+    .ghint.show{display:block}
+    .hero{background:#FFE8D6;padding:36px 24px;text-align:center;border-bottom:3px solid var(--cb)}
+    .hero h1{font-family:'Fredoka One',cursive;font-size:38px;color:var(--ca);line-height:1.1;margin-bottom:8px}
+    .hero p{font-size:16px;color:var(--cf);max-width:500px;margin:0 auto 20px}
+    .badge{display:inline-block;background:var(--cb);color:var(--ce);padding:6px 18px;border-radius:20px;font-weight:700;font-size:13px}
+    .content-area{padding:24px}
+    .card{background:#fff;border-radius:18px;padding:22px;box-shadow:0 2px 16px rgba(0,0,0,0.07);border:2px solid #f0e8e0;margin-bottom:20px}
+    .card h2{font-family:'Fredoka One',cursive;font-size:22px;color:var(--ca);margin-bottom:10px}
+    .card p{font-size:15px;line-height:1.7;color:#3D2800;margin-bottom:10px}
+    .menu-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:16px 0}
+    .menu-item{background:#fff;border:2px solid var(--cb);border-radius:16px;padding:16px;text-align:center;cursor:pointer;transition:transform 0.2s}
+    .menu-item:hover{transform:translateY(-3px)}
+    .menu-item .emoji{font-size:32px;display:block;margin-bottom:6px}
+    .menu-item .name{font-weight:700;font-size:14px;color:var(--ce)}
+    .menu-item .price{font-size:13px;color:var(--cf)}
+    .dev-note{background:#f0f4ff;border-left:4px solid var(--cd);border-radius:8px;padding:12px 16px;font-family:'Courier New',monospace;font-size:12.5px;color:var(--cd);margin:12px 0;line-height:1.7;cursor:pointer}
+    .flag-box{border-radius:16px;padding:18px;text-align:center;color:#fff;margin:16px 0;background:linear-gradient(135deg,var(--cb),var(--ca))}
+    .flag-title{font-family:'Fredoka One',cursive;font-size:20px;margin-bottom:6px}
+    .flag-val{font-family:'Courier New',monospace;font-size:16px;background:rgba(0,0,0,0.2);padding:6px 14px;border-radius:10px;display:inline-block;margin:6px 0;letter-spacing:1px}
+    .encoded{background:#2D1B00;color:var(--cc);font-family:'Courier New',monospace;font-size:14px;padding:14px;border-radius:12px;letter-spacing:2px;margin:10px 0;text-align:center}
+    .btn{display:inline-block;background:var(--ca);color:#fff;border:none;border-radius:14px;padding:10px 22px;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none;margin:6px 4px}
+    .btn:hover{opacity:0.9}
+    .btn-purple{background:var(--cd)}
+    .btn-green{background:var(--cc)}
+    .btn-outline{background:transparent;border:2px solid var(--ca);color:var(--ca)}
+    .login-form input{display:block;width:100%;padding:10px 14px;border:2px solid #e8d8c8;border-radius:12px;font-size:15px;margin:8px 0 14px;outline:none;color:#333}
+    .login-form input:focus{border-color:var(--ca)}
+    .login-form label{font-weight:700;font-size:14px;color:var(--cf)}
+    .notfound{text-align:center;padding:40px 20px}
+    .notfound .big{font-size:80px;margin-bottom:10px}
+    .notfound h2{font-family:'Fredoka One',cursive;font-size:28px;color:var(--ca);margin-bottom:10px}
+    .steps-bar{background:#fff;border-radius:14px;padding:14px 18px;display:flex;gap:6px;align-items:center;margin-bottom:18px;flex-wrap:wrap;border:2px solid #f0e8e0}
+    .step-dot{width:30px;height:30px;border-radius:50%;background:#f0e8e0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:var(--cf);transition:all 0.3s}
+    .step-dot.done{background:var(--cc);color:#fff}
+    .step-dot.active{background:var(--ca);color:#fff}
+    .pw-bar{background:#f0e8e0;border-radius:20px;height:10px;margin:12px 0;overflow:hidden}
+    .pw-fill{height:100%;background:linear-gradient(90deg,var(--cc),var(--ca));border-radius:20px;transition:width 0.5s ease}
+    .hcontent{display:none;background:#f8f0ff;border-radius:10px;padding:12px;margin-top:6px;font-size:14px;color:var(--cd);line-height:1.6}
+    .hcontent.show{display:block}
+    .sparkle{font-size:22px;text-align:center;margin:6px 0;letter-spacing:8px}
+    #toast{position:fixed;bottom:20px;right:20px;background:var(--cc);color:#fff;padding:12px 22px;border-radius:14px;font-weight:700;font-size:14px;display:none;z-index:999}
+    .trophy-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin:14px 0}
+    .trophy{text-align:center;background:#fff;border:2px solid var(--cb);border-radius:14px;padding:12px 16px;font-size:28px;min-width:80px}
+    .trophy .tl{font-size:11px;font-weight:700;color:var(--cf);margin-top:4px}
+    .learn-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+    .learn-card{border-radius:14px;padding:14px}
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div id="toast"></div>
+    <nav class="cafe-nav">
+      <span class="logo">🍪 Mystery Snack Café</span>
+      <div style="display:flex;align-items:center;gap:8px;flex:1;max-width:360px;margin:0 12px">
+        <span style="color:rgba(255,255,255,0.8);font-size:13px">🔒</span>
+        <input class="url-bar" id="navUrl" type="text" value="mysterysnackcafe.com/" onkeydown="uk(event)" placeholder="Type URL and press Enter..." />
+      </div>
+      <div class="nav-links">
+        <a href="#" onclick="nav('home');return false">Home</a>
+        <a href="#" onclick="nav('menu');return false">Menu</a>
+        <a href="#" onclick="nav('about');return false">About</a>
+      </div>
+    </nav>
+    <div class="url-section">
+      <label>Try a URL:</label>
+      <input class="url-input" id="urlIn" type="text" onkeydown="uk(event)" />
+      <button class="url-btn" onclick="goUrl()">Go! →</button>
+      <button class="htoggle" onclick="tgh()">Need a hint? 🙈</button>
+    </div>
+    <div id="ghint" class="ghint">
+      💡 Try typing paths like <code>/menu</code>, <code>/about</code> in the URL box. Look for developer notes — they accidentally reveal hidden paths!
+    </div>
+
+    <div id="pg-home" class="page active">
+      <div class="hero">
+        <div class="sparkle">✨🍩✨🍪✨🎂✨</div>
+        <h1>Welcome to the<br>Mystery Snack Café! 🍪</h1>
+        <p>We serve the most delicious snacks in town — and rumor has it, the owner hid a <strong>secret recipe</strong> somewhere on this website. Can you find it?</p>
+        <span class="badge">🔍 Beginner Treasure Hunt</span>
+      </div>
+      <div class="content-area">
+        <div class="card" style="border-color:var(--cc)">
+          <h2>🏆 Your Quest Progress</h2>
+          <div class="pw-bar"><div class="pw-fill" id="pwFill" style="width:0%"></div></div>
+          <div class="steps-bar">
+            <div class="step-dot active" id="d1">1</div>
+            <div style="flex:1;height:2px;background:#f0e8e0;border-radius:2px"></div>
+            <div class="step-dot" id="d2">2</div>
+            <div style="flex:1;height:2px;background:#f0e8e0;border-radius:2px"></div>
+            <div class="step-dot" id="d3">3</div>
+            <div style="flex:1;height:2px;background:#f0e8e0;border-radius:2px"></div>
+            <div class="step-dot" id="d4">4</div>
+            <div style="flex:1;height:2px;background:#f0e8e0;border-radius:2px"></div>
+            <div class="step-dot" id="d5">5</div>
+          </div>
+          <p style="font-size:13px;color:var(--cf)" id="ptxt">You've found the café! Explore and look for clues...</p>
+        </div>
+        <div class="card">
+          <h2>🌟 Today's Special!</h2>
+          <p>Our legendary <strong>Triple Choc Crumble Cookie</strong> is back! But wait — the chef forgot to post the full recipe online. Some say it's hidden deep in the website. 👀</p>
+          <p>Start by visiting the <strong>Menu</strong> page — there might be some <em>interesting notes</em> left by the developers...</p>
+          <button class="btn" onclick="nav('menu')">See the Menu 🍩</button>
+          <button class="btn btn-outline" onclick="nav('about')">About the Café</button>
+        </div>
+        <div class="card">
+          <h2>🗺️ How to Play</h2>
+          <p>This is a <strong>URL treasure hunt</strong>! Hidden pages aren't shown in the navigation — you have to discover the paths and type them manually.</p>
+          <p>Look for clues on each page. Developer notes sometimes accidentally reveal secret paths. Keep your eyes open! 👁️</p>
+          <div class="dev-note">NOTE TO JOHN: hey remember we have those hidden test pages still up, don't forget to check the other pages for my notes before launch day!! - Mike</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-menu" class="page">
+      <div class="hero" style="padding:24px">
+        <h1>🍩 Our Snack Menu</h1>
+        <p>Freshly baked every morning. Try clicking on items!</p>
+      </div>
+      <div class="content-area">
+        <div class="menu-grid">
+          <div class="menu-item" onclick="toast('Yum! But this isn\'t where the secret is... 🤔')"><span class="emoji">🍪</span><div class="name">Choc Chip Cookie</div><div class="price">₹40</div></div>
+          <div class="menu-item" onclick="toast('Delicious! Keep exploring the page 👀')"><span class="emoji">🍩</span><div class="name">Glazed Donut</div><div class="price">₹55</div></div>
+          <div class="menu-item" onclick="toast('Check the developer notes below 🔍')"><span class="emoji">🎂</span><div class="name">Birthday Cake Slice</div><div class="price">₹90</div></div>
+          <div class="menu-item" onclick="toast('Notice anything weird on this page? 🤫')"><span class="emoji">🧁</span><div class="name">Vanilla Cupcake</div><div class="price">₹50</div></div>
+          <div class="menu-item" onclick="toast('So chewy! But the secret isn\'t here...')"><span class="emoji">🥐</span><div class="name">Butter Croissant</div><div class="price">₹65</div></div>
+          <div class="menu-item" onclick="toast('Mystery Snack! 🍃 Keep looking...')"><span class="emoji">🍃</span><div class="name">Mystery Matcha Bar</div><div class="price">???</div></div>
+        </div>
+        <div class="card" style="border-color:var(--cd)">
+          <h2>🔮 Chef's Notes</h2>
+          <p>Our head chef has been working on a new recipe. It's so secret, she saved it as a backup file...</p>
+          <div class="dev-note" onclick="markS(2)">
+            TODO: Mike - why is the backup file STILL on the server???<br>
+            It has all the old recipes and some passwords 😱<br>
+            Path: <strong>/backup.txt</strong> — PLEASE DELETE IT before Monday!!!
+          </div>
+          <p style="font-size:13px;color:var(--cf)">👆 Click the note above, then try typing <code>/backup.txt</code> in the URL box!</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-about" class="page">
+      <div class="hero" style="padding:24px">
+        <h1>☕ About Our Café</h1>
+        <p>A cozy spot with a big secret...</p>
+      </div>
+      <div class="content-area">
+        <div class="card">
+          <h2>Our Story</h2>
+          <p>Mystery Snack Café was founded in 2019 by chef <strong>Priya Sharma</strong>. Her goal? Make the world's most mysterious snacks and hide the recipes in unusual places.</p>
+          <p>We believe food should be an adventure — just like this website! 🗺️</p>
+        </div>
+        <div class="card" style="border-color:var(--cd)">
+          <h2>🛠️ Site Info</h2>
+          <p>This website was built by our talented (but forgetful) developer team.</p>
+          <div class="dev-note" onclick="markS(2)">
+            URGENT: John, don't forget to hide the /secret page before launch!!<br>
+            Also TODO: Remove admin access link → <strong>/admin</strong><br>
+            And WHY is <strong>/backup.txt</strong> still here?? Clean up the server!!!
+          </div>
+          <p style="font-size:13px;color:var(--cf);margin-top:8px">💡 The developers left notes by accident. Did you spot the hidden paths?</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-backup" class="page">
+      <div class="content-area">
+        <div class="card" style="border-color:var(--cc)">
+          <div class="flag-box" id="fb1"></div>
+          <h2 style="font-family:'Courier New',monospace;color:var(--cf);font-size:14px;margin-bottom:14px"># backup.txt — DO NOT LEAVE ON SERVER!!!</h2>
+          <div class="encoded" style="text-align:left;font-size:13px;line-height:2">
+            old_recipes_list.txt<br>
+            chef_priya_notes.doc<br>
+            secret_ingredient.txt<br><br>
+            admin_login:<br>
+            &nbsp;&nbsp;user: admin<br>
+            &nbsp;&nbsp;pass: password123<br><br>
+            # Recipe is at: /secret<br>
+            # Admin panel: /admin<br><br>
+            encoded_hint: <span style="color:#FFD166" id="b64hint"></span>
+          </div>
+          <p style="font-size:14px;margin-top:14px;color:var(--ce)">That yellow text looks weird... it's <strong>Base64 encoded</strong>! Can you decode it? 🤔</p>
+          <button class="btn btn-purple" onclick="revDecode()">Decode the yellow text 🔓</button>
+          <div id="decRes" class="hcontent" style="margin-top:10px">
+            ✅ Decoded: <strong id="decTxt"></strong><br><br>
+            Now try visiting <code>/secret</code> in the URL bar! 🏃
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn" onclick="nav('admin')">Visit /admin 🔐</button>
+            <button class="btn btn-outline" onclick="nav('secret')">Try /secret 🤫</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-admin" class="page">
+      <div class="content-area">
+        <div class="card" style="border-color:var(--cb)">
+          <div class="flag-box" id="fb2" style="background:linear-gradient(135deg,var(--cd),#4A0080)"></div>
+          <h2 style="margin-top:16px">🔑 Staff Login</h2>
+          <p style="margin-bottom:16px;color:var(--cf)">Enter anything to get in — the login is broken! (That's the whole point 😄)</p>
+          <div class="login-form" id="lForm">
+            <label>Username</label>
+            <input type="text" id="aUser" placeholder="Try anything!" />
+            <label>Password</label>
+            <input type="password" id="aPass" placeholder="Any password works!" />
+            <button class="btn btn-purple" onclick="doLogin()" style="width:100%;display:block;margin:0">Login →</button>
+          </div>
+          <div id="lSuccess" style="display:none">
+            <div class="flag-box" style="background:linear-gradient(135deg,var(--cc),#047a5c)">
+              <div class="flag-title">✅ You're in!! Welcome, mysterious visitor!</div>
+              <p>You typed <strong id="uShow"></strong> and got right in. This is called "broken authentication" — in real life, a serious problem!</p>
+            </div>
+            <div class="card" style="margin-top:14px;border:none;background:#f8f0ff">
+              <h2 style="color:var(--cd)">Admin Menu Editor</h2>
+              <div class="dev-note">INTERNAL: The actual secret recipe flag is on <strong>/secret</strong> — don't share this path with customers!!</div>
+              <button class="btn" onclick="nav('secret')" style="margin-top:10px">Go find the secret! 🏆</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-secret" class="page">
+      <div class="content-area">
+        <div class="card" style="border:3px solid var(--ca)">
+          <div class="sparkle">🏆🍪🎉🍩✨🎊🌟</div>
+          <div class="flag-box" id="fb3" style="background:linear-gradient(135deg,var(--ca),#FF9A3C,var(--cb))"></div>
+          <h2 style="text-align:center;font-size:26px;margin:20px 0 10px">Chef Priya's Super Secret Recipe 🍪</h2>
+          <div style="background:#fffbf0;border:2px dashed var(--cb);border-radius:14px;padding:18px;font-size:14px;line-height:2;color:var(--ce)">
+            <strong>Triple Choc Crumble Cookie</strong> (TOP SECRET!!)<br><br>
+            🧈 200g butter (slightly cold)<br>
+            🍫 3 types of chocolate chips (dark, milk, white)<br>
+            🌟 1 tsp of <em>mystery spice</em> (the real secret!)<br>
+            🥚 2 eggs + 1 extra yolk<br>
+            🍪 Mix, chill for exactly 37 minutes, bake at 180°C<br><br>
+            <em style="color:var(--cf)">Note from Priya: If you found this page, you're officially a cyber-explorer! 🕵️</em>
+          </div>
+          <div style="margin-top:20px">
+            <h2>🎓 What Did You Learn?</h2>
+            <div class="learn-grid">
+              <div class="learn-card" style="background:#e8fff6">
+                <div style="font-size:22px;margin-bottom:6px">🗺️</div>
+                <strong style="font-size:14px">URL Exploration</strong>
+                <p style="font-size:13px;color:var(--cf);margin-top:4px">Websites can have hidden pages not shown in menus. Guessing paths is a real skill!</p>
+              </div>
+              <div class="learn-card" style="background:#fff0fb">
+                <div style="font-size:22px;margin-bottom:6px">📝</div>
+                <strong style="font-size:14px">Developer Notes</strong>
+                <p style="font-size:13px;color:var(--cf);margin-top:4px">Comments left in websites can accidentally reveal secrets. Always check the source!</p>
+              </div>
+              <div class="learn-card" style="background:#fff8e0">
+                <div style="font-size:22px;margin-bottom:6px">🔓</div>
+                <strong style="font-size:14px">Broken Login</strong>
+                <p style="font-size:13px;color:var(--cf);margin-top:4px">Login forms that accept anything are a huge security mistake!</p>
+              </div>
+              <div class="learn-card" style="background:#f0f0ff">
+                <div style="font-size:22px;margin-bottom:6px">🔡</div>
+                <strong style="font-size:14px">Simple Encoding</strong>
+                <p style="font-size:13px;color:var(--cf);margin-top:4px">Base64 scrambles text — but it's easily decoded. Real encryption is much stronger.</p>
+              </div>
+            </div>
+          </div>
+          <div class="trophy-row">
+            <div class="trophy">🗺️<div class="tl">Explorer</div></div>
+            <div class="trophy">🔍<div class="tl">Detective</div></div>
+            <div class="trophy">🔓<div class="tl">Unlocker</div></div>
+            <div class="trophy">🏆<div class="tl">Champion</div></div>
+          </div>
+          <div style="text-align:center;margin-top:10px">
+            <button class="btn" onclick="reset()">Play Again 🔄</button>
+            <button class="btn btn-green" onclick="toast('🎉 All 3 flags found! You are a cyber-explorer!')">Share Achievement 🌟</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="pg-404" class="page">
+      <div class="notfound">
+        <div class="big">🤔</div>
+        <h2>Hmm... that page doesn't exist!</h2>
+        <p style="color:var(--cf);margin:10px 0 20px;font-size:15px">You tried: <code id="nfPath" style="background:#f0e8e0;padding:2px 8px;border-radius:6px"></code></p>
+        <p style="font-size:14px;color:var(--cf);margin-bottom:20px">Keep trying! Check other pages for clues about what to type 🔍</p>
+        <button class="btn" onclick="nav('home')">← Back to Home</button>
+        <button class="btn btn-outline" onclick="nav('menu')">Check the Menu for Clues</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    var _s=0;
+
+    var _r=function(s){return s.split('').reverse().join('');};
+    var _x=function(s){try{return atob(s);}catch(e){return '';}};
+    var _j=function(a){return a.join('');};
+
+    var _d={
+      _a: _j(['\x46','\x4c','\x41','\x47','\x2d','\x31','\x3a',' ']).split('').map(function(c,i){return String.fromCharCode(c.charCodeAt(0)^(i%3===0?0:0))}).join(''),
+      _b: _r('\x44\x4e\x55\x4f\x46\x5f\x50\x55\x4b\x43\x41\x42\x5f\x4b\x43\x41\x4e\x53'),
+      _c: _j(['\x46','\x4c','\x41','\x47','\x2d','\x32','\x3a',' ']),
+      _e: _x('VUNMS0VEX0xPR0lOX1BBTkVM'),
+      _f: _j(['\x46','\x4c','\x41','\x47','\x2d','\x33','\x3a',' ']),
+      _g: _x('U0VDUkVUX1JFQ0lQRV9NQVNURVJf') + _r('\x504d414843'),
+      _h: _x('dGhlIHJlY2lwZSBpcyBvbiB0aGUgc2VjcmV0IHBhZ2U='),
+      _i: _x('RkxBRy0xOiBTTkFDS19CQUNLVVBfRk9VTkQ='),
+      _k: _x('RkxBRy0yOiBVTkxPQ0tFRF9MT0dJTl9QQU5FTA=='),
+      _l: _x('RkxBRy0zOiBTRUNSRVRfUkVDSVBFX01BU1RFUg==')
+    };
+
+    var _pm={
+      '':'home','home':'home','menu':'menu','about':'about',
+      'backup.txt':'backup','/backup.txt':'backup',
+      'admin':'admin','/admin':'admin',
+      'secret':'secret','/secret':'secret','/':'home'
+    };
+
+    var _steps=1;
+    var _vis={backup:false,admin:false,secret:false};
+
+    function _inject(id,title,flagStr,msg){
+      var el=document.getElementById(id);
+      if(!el)return;
+      el.innerHTML='<div class="flag-title">'+title+'</div><div class="flag-val">'+flagStr+'</div><p style="font-size:14px;opacity:0.9;margin-top:6px">'+msg+'</p>';
+    }
+
+    function _initBackup(){
+      document.getElementById('b64hint').textContent=_x('dGhlIHJlY2lwZSBpcyBvbiB0aGUgc2VjcmV0IHBhZ2U=');
+      document.getElementById('decTxt').textContent='"'+_d._h+'"';
+      _inject('fb1','🎉 Great Find! You discovered /backup.txt!',_d._l.split('').map(function(c,i){return i===0?_d._i:''}).join('')+_d._i,'You found the backup file! Real websites sometimes leave files like this exposed. Sneaky!');
+      _inject('fb1','🎉 Great Find! You discovered /backup.txt!',_d._i,'You found the backup file! Real websites sometimes leave files like this accidentally exposed. Sneaky!');
+    }
+
+    function _initAdmin(){
+      _inject('fb2','🔐 You found /admin!',_d._k,'In real websites, admin pages should always require proper login. This one doesn\'t check very carefully! 👀');
+    }
+
+    function _initSecret(){
+      _inject('fb3','🎊 YOU FOUND IT!! THE SECRET PAGE!!',_d._l,'This is the ultimate flag! You\'re a URL explorer extraordinaire! 🌟');
+    }
+
+    window.nav=function(p){
+      document.querySelectorAll('.page').forEach(function(el){el.classList.remove('active');});
+      var el=document.getElementById('pg-'+p);
+      if(el){el.classList.add('active');}
+      else{document.getElementById('pg-404').classList.add('active');}
+      document.getElementById('navUrl').value='mysterysnackcafe.com'+(p==='home'?'/':'/'+p);
+      document.getElementById('urlIn').value='';
+      if(!_vis[p]&&(p==='backup'||p==='admin'||p==='secret')){
+        _vis[p]=true;
+        if(p==='backup'){_initBackup();markS(3);window.toast('📄 You found the backup file! Read it carefully...');}
+        else if(p==='admin'){_initAdmin();markS(4);window.toast('🔐 Admin page found! Try logging in...');}
+        else if(p==='secret'){_initSecret();markS(5);window.toast('🏆 SECRET PAGE FOUND!! Final flag unlocked!',4000);}
+      }
+    };
+
+    window.goUrl=function(){
+      var v=document.getElementById('urlIn').value.trim().toLowerCase().replace(/^mysterysnackcafe\.com/,'').replace(/^\//,'');
+      var mapped=_pm[v]||_pm['/'+v];
+      if(mapped){nav(mapped);}
+      else{document.getElementById('nfPath').textContent='/'+v;nav('404');}
+    };
+
+    window.uk=function(e){if(e.key==='Enter')goUrl();};
+
+    window.tgh=function(){
+      var h=document.getElementById('ghint');
+      h.classList.toggle('show');
+    };
+
+    window.markS=function(n){
+      if(n<=_steps)return;
+      _steps=n;
+      var msgs=[
+        'You\'ve found the café! Explore and look for clues...',
+        'Spotted the dev notes! Now check the paths they revealed...',
+        'Backup file found! What secrets does it hold?',
+        'Admin panel found! Try logging in with anything...',
+        '🏆 Secret recipe discovered! Quest complete!!'
+      ];
+      for(var i=1;i<=5;i++){
+        var d=document.getElementById('d'+i);
+        if(i<n){d.className='step-dot done';d.textContent='✓';}
+        else if(i===n){d.className='step-dot active';d.textContent=i;}
+        else{d.className='step-dot';d.textContent=i;}
+      }
+      document.getElementById('ptxt').textContent=msgs[n-1]||'';
+      document.getElementById('pwFill').style.width=((n-1)*25)+'%';
+    };
+
+    window.doLogin=function(){
+      var u=document.getElementById('aUser').value.trim();
+      var p=document.getElementById('aPass').value.trim();
+      if(u||p){
+        document.getElementById('lForm').style.display='none';
+        document.getElementById('lSuccess').style.display='block';
+        document.getElementById('uShow').textContent='"'+(u||'(blank)') +'" / "'+(p||'(blank)')+'"';
+        markS(4);
+        window.toast('🔓 Login bypassed! Anything worked! Now find /secret...');
+      }else{
+        window.toast('Type anything in the fields to log in! 😄');
+      }
+    };
+
+    window.revDecode=function(){
+      document.getElementById('decRes').classList.toggle('show');
+    };
+
+    var _tid=null;
+    window.toast=function(msg,dur){
+      dur=dur||2800;
+      var t=document.getElementById('toast');
+      t.textContent=msg;t.style.display='block';
+      clearTimeout(_tid);
+      _tid=setTimeout(function(){t.style.display='none';},dur);
+    };
+
+    window.reset=function(){
+      _steps=1;_vis.backup=false;_vis.admin=false;_vis.secret=false;
+      document.getElementById('lForm').style.display='block';
+      document.getElementById('lSuccess').style.display='none';
+      document.getElementById('decRes').classList.remove('show');
+      document.getElementById('fb1').innerHTML='';
+      document.getElementById('fb2').innerHTML='';
+      document.getElementById('fb3').innerHTML='';
+      for(var i=1;i<=5;i++){
+        var d=document.getElementById('d'+i);
+        d.className='step-dot'+(i===1?' active':'');
+        d.textContent=i;
+      }
+      document.getElementById('pwFill').style.width='0%';
+      document.getElementById('ptxt').textContent='You\'ve found the café! Explore and look for clues...';
+      nav('home');
+      window.toast('🔄 Game reset! Start the adventure again!');
+    };
+
+  })();
+  </script>
+</body>
+</html>
