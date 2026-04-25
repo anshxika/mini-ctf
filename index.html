@@ -184,8 +184,7 @@
           <h2>🛠️ Site Info</h2>
           <p>This website was built by our talented (but forgetful) developer team.</p>
           <div class="dev-note" onclick="markS(2)">
-            URGENT: John, don't forget to hide the /secret page before launch!!<br>
-            Also TODO: Remove admin access link → <strong>/admin</strong><br>
+            <br>
             And WHY is <strong>/backup.txt</strong> still here?? Clean up the server!!!
           </div>
           <p style="font-size:13px;color:var(--cf);margin-top:8px">💡 The developers left notes by accident. Did you spot the hidden paths?</p>
@@ -205,7 +204,7 @@
             admin_login:<br>
             &nbsp;&nbsp;user: admin<br>
             &nbsp;&nbsp;pass: password123<br><br>
-            # Recipe is at: /secret<br>
+           
             # Admin panel: /admin<br><br>
             encoded_hint: <span style="color:#FFD166" id="b64hint"></span>
           </div>
@@ -228,12 +227,12 @@
         <div class="card" style="border-color:var(--cb)">
           <div class="flag-box" id="fb2" style="background:linear-gradient(135deg,var(--cd),#4A0080)"></div>
           <h2 style="margin-top:16px">🔑 Staff Login</h2>
-          <p style="margin-bottom:16px;color:var(--cf)">Enter anything to get in — the login is broken! (That's the whole point 😄)</p>
+          <p style="margin-bottom:16px;color:var(--cf)"> the login is broken! (That's the whole point 😄)</p>
           <div class="login-form" id="lForm">
             <label>Username</label>
-            <input type="text" id="aUser" placeholder="Try anything!" />
+            <input type="text" id="aUser" />
             <label>Password</label>
-            <input type="password" id="aPass" placeholder="Any password works!" />
+            <input type="password" id="aPass" />
             <button class="btn btn-purple" onclick="doLogin()" style="width:100%;display:block;margin:0">Login →</button>
           </div>
           <div id="lSuccess" style="display:none">
