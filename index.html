@@ -206,17 +206,16 @@
             &nbsp;&nbsp;pass: password123<br><br>
            
             # Admin panel: /admin<br><br>
-            encoded_hint: <span style="color:#FFD166" id="b64hint"></span>
+            encoded_hint: aXMgdGhlIHBhdGggdG8gdGhlIGNyYWJieSBwYXR0eSBvbiB0aGUgYWRtaW4gcGFnZT8h <br>
           </div>
           <p style="font-size:14px;margin-top:14px;color:var(--ce)">That yellow text looks weird... it's <strong>Base64 encoded</strong>! Can you decode it? 🤔</p>
           <button class="btn btn-purple" onclick="revDecode()">Decode the yellow text 🔓</button>
           <div id="decRes" class="hcontent" style="margin-top:10px">
             ✅ Decoded: <strong id="decTxt"></strong><br><br>
-            Now try visiting <code>/secret</code> in the URL bar! 🏃
+        
           </div>
           <div style="margin-top:16px">
             <button class="btn" onclick="nav('admin')">Visit /admin 🔐</button>
-            <button class="btn btn-outline" onclick="nav('secret')">Try /secret 🤫</button>
           </div>
         </div>
       </div>
